@@ -158,9 +158,11 @@ def create_booking():
     
     if not is_equipment_bookable(equipment):
         return jsonify({"error": "Equipment is currently on maintenance." }), 400
-    
-    from_date = parse_date(data["from_date"])
-    to_date = parse_date(data["to_date"])
+    try:
+        from_date = parse_date(data["from_date"])
+        to_date = parse_date(data["to_date"])
+    except (KeyError, ValueError):
+        return jsonify({"error": "Invalid Date." }), 400
     if to_date < from_date:
         return jsonify({"error": "End date cannot be before start date"}), 400
 
