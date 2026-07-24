@@ -70,7 +70,7 @@ def rental_days(from_date, to_date):
     TODO (Task 1): implement.
     """
     
-    return from_date-to_date.days+1
+    return (to_date-from_date).days+1
 
 
 def dates_overlap(start_a, end_a, start_b, end_b):
@@ -107,6 +107,8 @@ def calculate_total(daily_rate, days):
     discount = 0.9 if days >= 7 else 1 
     return discount * daily_rate * days
 
+def is_equipment_bookable(equipment):
+    return equipment["status"] == "available"
 
 # ---------------------------------------------------------------------------
 # API
@@ -119,7 +121,11 @@ def index():
 
 @app.route("/api/equipment")
 def list_equipment():
-    return jsonify(EQUIPMENT)
+    available_equipment = [] 
+    for item in EQUIPMENT:
+        if is_equipment_bookable(item):
+            available_equipment.append(item)
+    return jsonify(available_equipment)
 
 
 @app.route("/api/bookings")
@@ -136,8 +142,9 @@ def availability():
     available = []
     for item in EQUIPMENT:
         conflict = find_conflicting_booking(item["id"], from_date, to_date, bookings)
-        if conflict is None:
+        if conflict is None and is_equipment_bookable(item):
             available.append(item)
+        
     return jsonify(available)
 
 
@@ -148,7 +155,10 @@ def create_booking():
     equipment = get_equipment(data.get("equipment_id"))
     if equipment is None:
         return jsonify({"error": "Unknown equipment"}), 400
-
+    
+    if not is_equipment_bookable(equipment):
+        return jsonify({"error": "Equipment is currently on maintenance." }), 400
+    
     from_date = parse_date(data["from_date"])
     to_date = parse_date(data["to_date"])
     if to_date < from_date:
@@ -178,7 +188,6 @@ def create_booking():
     bookings.append(booking)
     save_bookings(bookings)
     return jsonify(booking), 201
-
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
