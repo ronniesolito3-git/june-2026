@@ -70,7 +70,7 @@ def rental_days(from_date, to_date):
     TODO (Task 1): implement.
     """
     
-    return abs(date.fromisoformat(from_date)-date.fromisoformat(to_date)).days+1
+    return abs(from_date-to_date).days+1
 
 
 def dates_overlap(start_a, end_a, start_b, end_b):
@@ -79,9 +79,7 @@ def dates_overlap(start_a, end_a, start_b, end_b):
 
     TODO (Task 1): implement.
     """
-    start_a = date.fromisoformat(start_a)
     start_b = date.fromisoformat(start_b)
-    end_a = date.fromisoformat(end_a)
     end_b = date.fromisoformat(end_b)
 
     return (start_a < end_b and start_b < end_a)
