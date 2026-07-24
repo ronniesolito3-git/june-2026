@@ -121,7 +121,11 @@ def index():
 
 @app.route("/api/equipment")
 def list_equipment():
-    return jsonify(EQUIPMENT)
+    available_equipment = [] 
+    for item in EQUIPMENT:
+        if is_equipment_bookable(item):
+            available_equipment.append(item)
+    return jsonify(available_equipment)
 
 
 @app.route("/api/bookings")
