@@ -106,7 +106,8 @@ def calculate_total(daily_rate, days):
 
     TODO (Task 2): implement.
     """
-    raise NotImplementedError
+    discount = 0.9 if days >= 7 else 1 
+    return discount * daily_rate * days
 
 
 # ---------------------------------------------------------------------------
