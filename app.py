@@ -83,8 +83,8 @@ def dates_overlap(start_a, end_a, start_b, end_b):
     start_b = date.fromisoformat(start_b)
     end_a = date.fromisoformat(end_a)
     end_b = date.fromisoformat(end_b)
-    
-    return (start_a <= end_b and start_b < end_a)
+
+    return (start_a < end_b and start_b < end_a)
 
 
 def find_conflicting_booking(equipment_id, from_date, to_date, bookings):
@@ -93,8 +93,11 @@ def find_conflicting_booking(equipment_id, from_date, to_date, bookings):
 
     TODO (Task 1): implement.
     """
-
-    raise NotImplementedError
+    for booking in bookings:
+        if booking["equipment_id"] == equipment_id:
+            if dates_overlap(from_date,to_date,booking["from_date"],booking["to_date"]) and booking["status"] != "cancelled":
+                return booking
+    return None
 
 
 def calculate_total(daily_rate, days):
