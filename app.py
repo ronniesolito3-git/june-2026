@@ -105,7 +105,7 @@ def calculate_total(daily_rate, days):
     TODO (Task 2): implement.
     """
     discount = 0.9 if days >= 7 else 1 
-    return discount * daily_rate * days
+    return round(discount * daily_rate * days,2)
 
 def is_equipment_bookable(equipment):
     return equipment["status"] == "available"
@@ -135,10 +135,12 @@ def list_bookings():
 
 @app.route("/api/availability")
 def availability():
-    from_date = parse_date(request.args["from"])
-    to_date = parse_date(request.args["to"])
-    bookings = load_bookings()
-
+    try:
+        from_date = parse_date(request.args["from"])
+        to_date = parse_date(request.args["to"])
+        bookings = load_bookings()
+    except (KeyError,ValueError):
+        return jsonify({"error": "Invalid Date."}), 400
     available = []
     for item in EQUIPMENT:
         conflict = find_conflicting_booking(item["id"], from_date, to_date, bookings)
