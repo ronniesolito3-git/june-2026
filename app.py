@@ -83,8 +83,8 @@ def dates_overlap(start_a, end_a, start_b, end_b):
     start_b = date.fromisoformat(start_b)
     end_a = date.fromisoformat(end_a)
     end_b = date.fromisoformat(end_b)
+    
     return (start_a <= end_b and start_b < end_a)
-
 
 
 def find_conflicting_booking(equipment_id, from_date, to_date, bookings):
